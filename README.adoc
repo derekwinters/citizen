@@ -53,12 +53,24 @@ $ ./citizen publish module <namespace> <name> <provider> <version>
 
 You should set `CITIZEN_ADDR` as citizen registry server address which you will publish your modules to. e.g. `https://registry.example.com`.
 
+Additionally, environment variables are available to set the `owner` and `source` of the module.
+
 === Examples
 If you have ALB module in `./alb` directory and your registry server is launched at `https://registry.example.com`, you run below command in `./alb` directory to publish ALB module.
 [source, sh]
 ....
 $ CITIZEN_ADDR=https://registry.example.com \
   citizen publish dev-team alb aws 0.1.0
+....
+
+With owner and source set
+
+[source, sh]
+....
+$ CITIZEN_ADDR=https://registry.example.com \
+  CITIZEN_MODULE_OWNER=myname \
+  CITIZEN_MODULE_SOURCE=https://github.com/myuser/mymodule \
+  citizen publish module dev-team alb aws 0.1.0
 ....
 
 Then, you can define it in your terraform file like this:

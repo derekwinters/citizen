@@ -20,6 +20,7 @@ router.post('/:namespace/:name/:provider/:version', (req, res, next) => {
   let tarball;
   let filename;
   let owner = '';
+  let source = '';
 
   const form = new multiparty.Form();
 
@@ -35,10 +36,14 @@ router.post('/:namespace/:name/:provider/:version', (req, res, next) => {
     });
 
     const ownerBuf = [];
+    const sourceBuf = [];
     const file = [];
     part.on('data', (buffer) => {
       if (!part.filename && part.name === 'owner') {
         ownerBuf.push(buffer);
+      }
+      if (!part.filename && part.name === 'source') {
+        sourceBuf.push(buffer);
       }
       if (part.filename) {
         file.push(buffer);
@@ -47,6 +52,9 @@ router.post('/:namespace/:name/:provider/:version', (req, res, next) => {
     part.on('end', async () => {
       if (!part.filename && part.name === 'owner') {
         owner = Buffer.concat(ownerBuf).toString();
+      }
+      if (!part.filename && part.name === 'source') {
+        source = Buffer.concat(sourceBuf).toString();
       }
       if (part.filename) {
         ({ filename } = part);
@@ -73,6 +81,7 @@ router.post('/:namespace/:name/:provider/:version', (req, res, next) => {
         provider,
         version,
         owner,
+        source,
         location: `${destPath}/${filename}`,
         definition,
       });
@@ -81,6 +90,7 @@ router.post('/:namespace/:name/:provider/:version', (req, res, next) => {
         return res.status(201).render('modules/register', {
           id: destPath,
           owner,
+          source,
           namespace,
           name,
           provider,

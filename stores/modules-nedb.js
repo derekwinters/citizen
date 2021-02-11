@@ -14,6 +14,7 @@ const save = (data) => new Promise((resolve, reject) => {
     provider,
     version,
     owner,
+    source,
     location,
     definition = {},
   } = data;
@@ -21,6 +22,7 @@ const save = (data) => new Promise((resolve, reject) => {
   const module = {
     _id: `${uuid()}`,
     owner: owner || '',
+    source: source || '',
     namespace,
     name,
     provider,

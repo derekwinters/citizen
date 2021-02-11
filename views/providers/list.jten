@@ -14,7 +14,7 @@ module.exports = (data) => ({
       version: m.version,
       provider: m.provider,
       description: '',
-      source: '',
+      source: m.source,
       published_at: m.published_at,
       downloads: 0,
       verified: false,

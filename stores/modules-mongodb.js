@@ -23,12 +23,14 @@ const save = (data) => new Promise((resolve, reject) => {
     provider,
     version,
     owner,
+    source,
     location,
     definition = {},
   } = data;
 
   const module = new Module({
     owner,
+    source,
     namespace,
     name,
     provider,
