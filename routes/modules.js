@@ -122,7 +122,7 @@ router.get('/:namespace/:name/:provider', async (req, res, next) => {
     return next();
   }
 
-  return res.render('modules/latest-version', module);
+  return res.render('modules/module', module);
 });
 
 module.exports = router;
