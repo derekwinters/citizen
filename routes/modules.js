@@ -1,10 +1,10 @@
 const { Router } = require('express');
 const multiparty = require('multiparty');
-
+const semverSort = require('semver-sort');
 const logger = require('../lib/logger');
 const { parseHcl } = require('../lib/util');
 const { saveModule, hasModule } = require('../lib/storage');
-const { save, getLatestVersion, findOne } = require('../lib/modules-store');
+const { save, getVersions, findOne } = require('../lib/modules-store');
 
 const router = Router();
 
@@ -126,13 +126,26 @@ router.get('/:namespace/:name/:provider/:version', async (req, res, next) => {
 router.get('/:namespace/:name/:provider', async (req, res, next) => {
   const options = { ...req.params };
 
-  const module = await getLatestVersion(options);
+  try {
+    const versions = await getVersions(options);
+    let versionList = versions.map(function(release) { return release.version});
+    let sortedVersions = semverSort.asc(versionList);
+    let latestVersion = sortedVersions.pop();
+    console.log(sortedVersions);
 
-  if (!module) {
-    return next();
+    const module = await findOne({
+      namespace: req.params.namespace,
+      name: req.params.name,
+      provider: req.params.provider,
+      version: latestVersion
+    });
+
+    return res.render('modules/module', module);
+
+  } catch (e) {
+    next(e);
   }
 
-  return res.render('modules/module', module);
 });
 
 module.exports = router;
